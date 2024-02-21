@@ -11,12 +11,13 @@ WORKDIR /app
 EXPOSE 8000
 
 ARG DEV=false
+RUN sed -i 's/https/http/' /etc/apk/repositories 
 RUN python -m venv /py && \
     /py/bin/pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org --upgrade pip && \
     apk add --update --no-cache postgresql-client jpeg-dev && \
     apk add --update --no-cache --virtual .tmp-build-deps \
         build-base postgresql-dev musl-dev zlib zlib-dev linux-headers && \
-    /py/bin/pip install -r /tmp/requirements.txt && \
+    /py/bin/pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r /tmp/requirements.txt && \
     if [ $DEV = "true" ]; \
         then /py/bin/pip install --trusted-host pypi.org --trusted-host files.pythonhosted.org -r /tmp/requirements.dev.txt ; \
     fi && \
